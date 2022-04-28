@@ -1,0 +1,6 @@
+.DS_Store
+data/*
+Graphs/*
+Models/*
+Processed_Images/*
+Processed_Paths/*
