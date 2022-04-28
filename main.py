@@ -1,81 +1,19 @@
-from Src.loader import *
-from Src.categorizer import *
 from Src.settings import *
-from Src.GUI.classifier_gui import ClassifierGUI
+from Src.GUI.quantum_gui import QuantumGUI
 
 # =================
 # ALEXNET MODEL
 # VERSION MINI/BASIC
 # ==================
 
-settings = ModelSettings(
+settings = Settings(
     # Defines how many convolutional layers in the network, and how many filters per layer.
     # len(convolution_layers) is how many layers are in a network.
     # After every layer, MaxPool2D is performed (exluding the last one).
     # A layer size can be a single integer, or an array of integers
     # If it is an array, there are multiple Conv2Ds before MaxPool2D
     # It is a good idea to use a numer which is a power of 2
-    convolution_layers = [              
-                [16,16],                
-                [32,32],
-                [64,64]
-    ],
 
-    # Activation to be used in the filters
-    # Either 'relu', 'tanh'. 
-    # Relu is much faster but the loss function might explode upwards                           
-    convolution_activation = ActivationType.relu,
-
-    # Defines filter sizes per layer.
-    # Len of this array must match convolution_layers'
-    # Only integers are allowed!!! + make sure it is an ODD number
-    # Filter of size n is n x n matrix
-    convolution_sizes = [               
-                3,
-                3,
-                3
-    ],      
-
-    # Defines the layer that connects Conv layers with Dense layers
-    # Either 'global_avg', 'maxpool','flatten'
-    # global_avg is significantly faster but might lose some information 
-    # maxpool is a jack of all trades
-    # flatten is the best but slow as turtle
-    middle_layer = MiddleLayerType.max_pool,
-
-    # Defines how many dense layers in the network, and the neuron count.
-    # len(dense_layers) is how many layers are in a network.
-    # After every layer, Dropout is performed is performed (exluding the last one).
-    # A layer size can be a single integer, or an array of integers
-    # It is a good idea to use a numer which is a power of 2
-    # Works similarly to Conv2D in that regard
-    dense_layers = [                    
-                1024,
-                1024
-    ],
-
-    # Activation to be used in the neurons
-    # Either 'relu', 'tanh'. 
-    # Relu is much faster but the loss function might explode upwards            
-    dense_activation = ActivationType.relu,          
-
-    # Chance of deactivating the output of any neuron
-    # It is a number between 0 and 1
-    # Prevents overfitting with higher values, but harder to learn
-    dropout_rate = 0.2,
-
-    # Optimizer to be used in the network, from the following:
-    # 'SGD' (momentum gradient descent),     
-    # 'RMSprop' (decaying learning rate), 
-    # 'adam' (both basically)
-    # It is almost always a good idea to use adam
-    optimizer = OptimizerType.adam,                 
-
-    # How fast the network is learning (Speed of gradient descent)
-    # Higher values make it much easier to learn at first, good for testing
-    # But it is harder then to achieve decent accuracy in the long-term
-    # Value between 0.0 - 0.01
-    learning_rate = 0.001,              
 
     # How many epochs to perform
     epochs = 20, 
@@ -97,7 +35,7 @@ settings = ModelSettings(
     print_summary = True                # Prints network summary upon creation
 )
 
-app = ClassifierGUI(settings)
+app = QuantumGUI(settings)
 #app.run()
 
 '''

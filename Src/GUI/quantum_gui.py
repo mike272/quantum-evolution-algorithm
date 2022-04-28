@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (QGridLayout, QVBoxLayout, QFrame, QPushButton,
 from pathlib import Path
 import sys
 
-from Src.settings import ModelSettings
+from Src.settings import Settings
 
 class describedWidget:
     def __init__(self, widget:QWidget, description="", tooltip=""):
@@ -17,15 +17,15 @@ class describedWidget:
         self.description = description
         self.tooltip = tooltip
 
-class ClassifierGUI(object):
-    def __init__(self, settings:ModelSettings):
+class QuantumGUI(object):
+    def __init__(self, settings:Settings):
 
         self.settings = settings
 
         self.app = QApplication(sys.argv)
 
         self.mainDialog = QDialog()
-        self.mainDialog.setWindowTitle("Classifier GUI")
+        self.mainDialog.setWindowTitle("Quantum Evolution GUI")
         self.mainDialog.setWindowModality(Qt.NonModal)
         self.mainDialog.setMinimumSize(800, 500)
         self.mainLayout = QHBoxLayout(self.mainDialog)
@@ -36,11 +36,9 @@ class ClassifierGUI(object):
 
         ## VISUALIZATION
 
+        self.visualizationLabel = QLabel("Best performing model statistics")
         self.visualizationWidget = QWidget()
         self.visualizationWidget.setStyleSheet("background-color: white; border: 1px solid black;")
-
-        self.startTrainingButton = QPushButton("Load saved model")
-        
 
         self.progressBar = QProgressBar(minimum = 0, maximum = 100, value = 10)
         self.progressBarLabel = QLabel("This will describe what is happening right now\n(What process is running)")
@@ -50,8 +48,6 @@ class ClassifierGUI(object):
         self.buttonsLayout = QHBoxLayout()
         self.startTrainingButton = QPushButton("Start training")
         self.startTrainingButton.clicked.connect(self.startTraining)
-        self.loadModelButton = QPushButton("Load model")
-        self.startTrainingButton.clicked.connect(self.loadModel)
         self.testModelButton = QPushButton("Test on an image...")
         self.testModelButton.clicked.connect(self.testModel)
 
@@ -60,21 +56,31 @@ class ClassifierGUI(object):
         self.modelNameTextBox = QLineEdit()
         self.modelNameTextBox.setText(str(self.settings.model_name))
 
+        self.babiesCountTextBox = QLineEdit()
+        self.babiesCountTextBox.setText(str(self.settings.babies_count))
+
+        self.leadersCountTextBox = QLineEdit()
+        self.leadersCountTextBox.setText(str(self.settings.leaders_count))
+
+        self.initialBitsCountTextBox = QLineEdit()
+        self.initialBitsCountTextBox.setText(str(self.settings.initial_bits_count))
+
+        self.initialBitsCountTextBox = QLineEdit()
+        self.initialBitsCountTextBox.setText(str(self.settings.initial_bits))
+
         self.epochsTextBox = QLineEdit()
         self.epochsTextBox.setText(str(self.settings.epochs))
 
         self.batchSizeTextBox = QLineEdit()
         self.batchSizeTextBox.setText(str(self.settings.batch_size))
 
-        self.learningRateTextBox = QLineEdit()
-        self.learningRateTextBox.setText(str(self.settings.learning_rate))
+        self.mutationRateTextBox = QLineEdit()
+        self.mutationRateTextBox.setText(str(self.settings.mutation_rate))
 
         self.validationSplitTextBox = QLineEdit()
         self.validationSplitTextBox.setText(str(self.settings.validation_split))
 
-        self.optimizerTextBox = QLineEdit()
-        self.optimizerTextBox.setText(str(self.settings.optimizer))
-
+   
 
         ## CONSOLE STUFF
         self.consoleSettingsLayout = QHBoxLayout()
@@ -154,7 +160,7 @@ class ClassifierGUI(object):
                 tooltip="Number of images in a single batch, must be an int"
             ),
             describedWidget(
-                widget=self.learningRateTextBox,
+                widget=self.mutationRateTextBox,
                 description="Learning rate:",
                 tooltip="Speed of gradient descent, must be 0.001 - 0.1"
             ),
