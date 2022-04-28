@@ -29,7 +29,7 @@ settings = Settings(
     
 
     # Optional, not really important
-    model_name = 'alexy',               # Name of the model
+    model_name = 'quantum bits boi',               # Name of the model
     validation_split = 0.1,             # Percentage of data used for validation of learning outcomes            
     verbose = 1,                        # Either 1 (on) or 0 (off)
     print_summary = True                # Prints network summary upon creation

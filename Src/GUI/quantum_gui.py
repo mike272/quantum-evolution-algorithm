@@ -5,9 +5,10 @@ from PyQt5.QtWidgets import (QGridLayout, QVBoxLayout, QFrame, QPushButton,
                              QPushButton,QSpinBox, QDialog, QLineEdit,
                              QCheckBox, QDialogButtonBox, QWidget, QProgressBar,
                              QListView, QTextBrowser, QApplication, QSpacerItem,
-                             QSizePolicy)
+                             QSizePolicy, QListWidget, QListWidgetItem)
 from pathlib import Path
 import sys
+from random import randint
 
 from Src.settings import Settings
 
@@ -32,13 +33,20 @@ class QuantumGUI(object):
 
         self.visualizationAndProgressLayout = QVBoxLayout()
         self.configurationAndConsoleLayout = QVBoxLayout()
-        self.layersConfigurationLayout = QVBoxLayout()
+        self.fitnessLayout = QVBoxLayout()
 
         ## VISUALIZATION
 
-        self.visualizationLabel = QLabel("Best performing model statistics")
+        self.visualizationLabel = QLabel("Best performing model statistics\n(Epoch: <epoch>, use buttons to navigate)")
+        #self.visualizationLabel.setStyleSheet("font-size: 12px; font-weight: bold;")
         self.visualizationWidget = QWidget()
         self.visualizationWidget.setStyleSheet("background-color: white; border: 1px solid black;")
+
+        self.visualizationButtonsLayout = QHBoxLayout()
+        self.previousModelButton = QPushButton("Previous")
+        self.previousModelButton.clicked.connect(self.startTraining)
+        self.nextModelButton = QPushButton("Next")
+        self.nextModelButton.clicked.connect(self.testModel)
 
         self.progressBar = QProgressBar(minimum = 0, maximum = 100, value = 10)
         self.progressBarLabel = QLabel("This will describe what is happening right now\n(What process is running)")
@@ -46,7 +54,7 @@ class QuantumGUI(object):
         
         ## BOTTOM BUTTONS
         self.buttonsLayout = QHBoxLayout()
-        self.startTrainingButton = QPushButton("Start training")
+        self.startTrainingButton = QPushButton("Start evolution")
         self.startTrainingButton.clicked.connect(self.startTraining)
         self.testModelButton = QPushButton("Test on an image...")
         self.testModelButton.clicked.connect(self.testModel)
@@ -56,18 +64,6 @@ class QuantumGUI(object):
         self.modelNameTextBox = QLineEdit()
         self.modelNameTextBox.setText(str(self.settings.model_name))
 
-        self.babiesCountTextBox = QLineEdit()
-        self.babiesCountTextBox.setText(str(self.settings.babies_count))
-
-        self.leadersCountTextBox = QLineEdit()
-        self.leadersCountTextBox.setText(str(self.settings.leaders_count))
-
-        self.initialBitsCountTextBox = QLineEdit()
-        self.initialBitsCountTextBox.setText(str(self.settings.initial_bits_count))
-
-        self.initialBitsCountTextBox = QLineEdit()
-        self.initialBitsCountTextBox.setText(str(self.settings.initial_bits))
-
         self.epochsTextBox = QLineEdit()
         self.epochsTextBox.setText(str(self.settings.epochs))
 
@@ -76,6 +72,18 @@ class QuantumGUI(object):
 
         self.mutationRateTextBox = QLineEdit()
         self.mutationRateTextBox.setText(str(self.settings.mutation_rate))
+
+        self.babiesCountTextBox = QLineEdit()
+        self.babiesCountTextBox.setText(str(self.settings.babies_count))
+
+        self.leadersCountTextBox = QLineEdit()
+        self.leadersCountTextBox.setText(str(self.settings.leaders_count))
+
+        self.bitsCountTextBox = QLineEdit()
+        self.bitsCountTextBox.setText(str(self.settings.bits_count))
+
+        self.initialBitsTextBox = QLineEdit()
+        self.initialBitsTextBox.setText(str(self.settings.initial_bits))
 
         self.validationSplitTextBox = QLineEdit()
         self.validationSplitTextBox.setText(str(self.settings.validation_split))
@@ -90,12 +98,13 @@ class QuantumGUI(object):
         self.printSummaryCheckBox = QCheckBox()
         self.printSummaryCheckBox.setChecked(False)
         
-        self.consoleSpacer = QSpacerItem(10, 50, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.consoleSpacer = QSpacerItem(10, 30, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.consoleLayout = QVBoxLayout()
         self.consoleLabel = QLabel("Console output")
-        self.consoleLabel.setStyleSheet("font-size: 12px; font-weight: bold;")
+        #self.consoleLabel.setStyleSheet("font-size: 12px; font-weight: bold;")
         self.consoleWidget = QWidget()
+        self.consoleWidget.setMinimumHeight(150)
         self.consoleWidget.setStyleSheet("background-color: black;")
         self.consoleText = QTextBrowser(self.consoleWidget)
         self.consoleText.setText("This will show console output")
@@ -103,21 +112,9 @@ class QuantumGUI(object):
         
 
         ## LAYERS SETTINGS
-        self.convLayersLabel = QLabel("Convolutional Layers")
-        #self.convLayersLabel.setStyleSheet("font-size: 14px; ")
-        self.convLayersList = QWidget()
-        self.convLayersList.setStyleSheet("background-color: white;")
-
-        self.middleLayerLabel = QLabel("Middle layer")
-        #self.middleLayerLabel.setStyleSheet("font-size: 14px;")
-        self.middleLayerTextBox = QLineEdit()
-        self.middleLayerTextBox.setText(str(self.settings.middle_layer))
-        
-        self.denseLayersLabel = QLabel("Dense Layers")
-        #self.denseLayersLabel.setStyleSheet("font-size: 14px;")
-        self.denseLayersList = QWidget()
-        self.denseLayersList.setStyleSheet("background-color: white;")
-
+        self.fitnessLabel = QLabel("Current epoch fitness")
+        self.fitnessList = QListWidget()
+        self.fitnessList.setStyleSheet("background-color: white; border: 1px solid black;")
 
         self.build_layout()
 
@@ -129,15 +126,21 @@ class QuantumGUI(object):
 
         ## LEFT
 
+        self.visualizationAndProgressLayout.addWidget(self.visualizationLabel, 1)
         self.visualizationAndProgressLayout.addWidget(self.visualizationWidget, 8)
-        self.visualizationAndProgressLayout.addWidget(self.progressBar,1)
+
+        self.visualizationButtonsLayout.addWidget(self.previousModelButton)
+        self.visualizationButtonsLayout.addWidget(self.nextModelButton)
+
+        self.visualizationAndProgressLayout.addLayout(self.visualizationButtonsLayout, 2)
+
+        self.visualizationAndProgressLayout.addWidget(self.progressBar,2)
         self.visualizationAndProgressLayout.addWidget(self.progressBarLabel,1)
-        
+
         self.buttonsLayout.addWidget(self.startTrainingButton)
-        self.buttonsLayout.addWidget(self.loadModelButton)
         self.buttonsLayout.addWidget(self.testModelButton)
 
-        self.visualizationAndProgressLayout.addLayout(self.buttonsLayout, 1)
+        self.visualizationAndProgressLayout.addLayout(self.buttonsLayout, 2)
 
         self.mainLayout.addLayout(self.visualizationAndProgressLayout, 2)
 
@@ -161,29 +164,44 @@ class QuantumGUI(object):
             ),
             describedWidget(
                 widget=self.mutationRateTextBox,
-                description="Learning rate:",
-                tooltip="Speed of gradient descent, must be 0.001 - 0.1"
+                description="Mutation rate:",
+                tooltip="Chance of evolution, recommended is 1/BITS_COUNT"
+            ),
+            describedWidget(
+                widget=self.babiesCountTextBox,
+                description="Babies count:",
+                tooltip="TODO enforce specific values"
+            ),
+            describedWidget(
+                widget=self.leadersCountTextBox,
+                description="Leaders count:",
+                tooltip="TODO enforce specific values"
+            ),
+            describedWidget(
+                widget=self.bitsCountTextBox,
+                description="Bits count:",
+                tooltip="TODO enforce specific values"
+            ),
+            describedWidget(
+                widget=self.initialBitsTextBox,
+                description="Initial bits:",
+                tooltip="TODO enforce specific values"
             ),
             describedWidget(
                 widget=self.validationSplitTextBox,
                 description="Validation split:",
-                tooltip="Percentage of images used for validation, 0.05-0.95"
-            ),
-            describedWidget(
-                widget=self.optimizerTextBox,
-                description="Optimizer:",
-                tooltip="TODO enforce specific values"
+                tooltip="Percentage of images used for validation, 0-0.95"
             )
         ])
 
         self.configurationAndConsoleLayout.addItem(self.consoleSpacer)
-        self.configurationAndConsoleLayout.addWidget(self.consoleLabel,1)
+        self.configurationAndConsoleLayout.addWidget(self.consoleLabel, 1)
         self.configurationAndConsoleLayout.addWidget(self.consoleWidget, 3)
 
         self.addDescribedWidget(parent=self.consoleSettingsLayout, listWidgets=[
             describedWidget(
                 widget=self.verboseCheckBox,
-                description="TF Verbose:",
+                description="Additional verbose:",
                 tooltip="TODO"
             ),
             describedWidget(
@@ -195,21 +213,18 @@ class QuantumGUI(object):
 
         self.configurationAndConsoleLayout.addLayout(self.consoleSettingsLayout,2)
 
-    
         self.mainLayout.addLayout(self.configurationAndConsoleLayout, 1)
 
         ## RIGHT
         
-        self.layersConfigurationLayout.addWidget(self.convLayersLabel)
-        self.layersConfigurationLayout.addWidget(self.convLayersList,5)
+        self.fitnessLayout.addWidget(self.fitnessLabel)
+        self.fitnessLayout.addWidget(self.fitnessList,5)
 
-        self.layersConfigurationLayout.addWidget(self.middleLayerLabel)
-        self.layersConfigurationLayout.addWidget(self.middleLayerTextBox)
+        for i in range(0,20):
+            b = format(i,'b').zfill(self.settings.bits_count)
+            self.fitnessList.addItem(QListWidgetItem(f"{b}   fitness: {round(randint(0,100)/100,2)}"))
 
-        self.layersConfigurationLayout.addWidget(self.denseLayersLabel)
-        self.layersConfigurationLayout.addWidget(self.denseLayersList,5)
-
-        self.mainLayout.addLayout(self.layersConfigurationLayout, 1)
+        self.mainLayout.addLayout(self.fitnessLayout, 1)
 
 
     def loadModel(self):

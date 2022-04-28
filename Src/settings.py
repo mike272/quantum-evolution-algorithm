@@ -31,7 +31,7 @@ class Settings:
         self.mutation_rate = 0.05
         self.babies_count = 100
         self.leaders_count = 10
-        self.initial_bits_count = 12
+        self.bits_count = 12
         self.initial_bits = "000000000000"
         
         self.epochs = epochs  
@@ -41,7 +41,7 @@ class Settings:
         self.print_summary = print_summary
         self.verbose = verbose
 
-        assert(len(self.initial_bits) == self.initial_bits_count)
+        assert(len(self.initial_bits) == self.bits_count)
 
         if DEBUG: 
             self.epochs = 1
