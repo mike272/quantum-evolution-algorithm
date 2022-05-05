@@ -1,3 +1,4 @@
+from Src.GUI.quantum_flappy_cow import Game
 from Src.settings import *
 from Src.GUI.quantum_gui import QuantumGUI
 
@@ -24,7 +25,7 @@ settings = Settings(
     # If batch_size = 1, it is called a stochastic gradient descent
     # Which is extremely good for learning
     # But you can go asleep before a single epoch finishes
-    # Also, reducing this may help memory errors, as less images are loaded into memory
+    # Also, reducing this may help memory errors, as less images are    loaded into memory
     batch_size = 2048,                  
     
 
@@ -34,8 +35,9 @@ settings = Settings(
     verbose = 1,                        # Either 1 (on) or 0 (off)
     print_summary = True                # Prints network summary upon creation
 )
-
-app = QuantumGUI(settings)
+game = Game()
+game.play()
+#app = QuantumGUI(settings)
 #app.run()
 
 '''

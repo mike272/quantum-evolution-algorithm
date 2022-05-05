@@ -1,24 +1,23 @@
 from os import environ
+from typing import Tuple
 
 ####
 #### This file contains constant values for the whole program
 ####
 
-IMAGES_PATH  = './data/Images/'     # Folder containing multiple folders with dog images
-ANNONS_PATH  = './data/Annotation/' # Folder containing annotations for the dog images
-GRAPHS_PATH  = './Graphs/'          # Folder for where to store graphs
-MODELS_PATH  = './Models/'          # Folder for where to store models after training
-
-OUTPUTS_PATH = './Processed_Images/'        # Folder containing the augmented doggos images
-PREPRC_PATH  = './Processed_Paths/'         # Folder containing files with paths and breeds of the dogs
 STATS_FILE   = 'models_statistics.csv'      # File which stores statistics about every session
 TEST_FILE    = 'test_set_statistics.csv'    # File which stores statistics of a test session run on a selected model
 
-
 DEBUG = False               # Debug mode - loads/processes only a few images basically instant program execution
-IMAGE_SIZE = 64             # Size to which all images and masks will be rescaled
-DEMO_MODEL = 'alexGG.h5'    # Demo model used in demonstrations if no arguments were given
-DEMO_FILE  = 'example.png'  # Demo image used in demonstrations if no arguments were given
+
+SCREEN_SIZE = [1280,720]
+FPS = 60
+
+X_VELOCITY = 2
+GRAVITY = 1
+JUMP_POWER = 15
+
+ASSETS_PATH = "./Assets/"
 
 if not DEBUG:
     # This silences obnoxious tensorflow messages
