@@ -11,11 +11,14 @@ TEST_FILE    = 'test_set_statistics.csv'    # File which stores statistics of a 
 DEBUG = False               # Debug mode - loads/processes only a few images basically instant program execution
 
 SCREEN_SIZE = [1280,720]
+PIPE_IMAGE_SIZE = [200,3000]
 FPS = 60
 
 X_VELOCITY = 2
 GRAVITY = 1
 JUMP_POWER = 15
+HOLE_SIZE = 100
+HOLE_MIN_DIST = 100
 
 ASSETS_PATH = "./Assets/"
 

@@ -1,21 +1,13 @@
-from pygame.time import \
-    Clock
 from pygame import \
     Surface
-from pygame.display import \
-    set_mode as create_screen, \
-    set_caption as set_screen_caption, \
-    update as update_screen
 from pygame.image import \
     load as load_image
 from pygame.transform import \
-    scale as scale_image, \
     rotate as rotate_image
 from pygame.sprite import \
-    Sprite, \
-    OrderedUpdates
+    Sprite \
 
-from math import atan,sqrt
+from math import atan
 
 from Src.const import ASSETS_PATH, GRAVITY, JUMP_POWER, SCREEN_SIZE, X_VELOCITY
 

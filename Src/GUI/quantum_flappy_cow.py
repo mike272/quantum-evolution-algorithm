@@ -17,6 +17,7 @@ from pygame.sprite import \
 
 from Src.const import ASSETS_PATH, SCREEN_SIZE, FPS
 from Src.GUI.cow import Cow
+from Src.GUI.pipe import Pipe
 
 class Game:
 
@@ -33,12 +34,14 @@ class Game:
         self.background = scale_image(self.background, SCREEN_SIZE)
 
         self.screen.blit(self.background, (0,0))
+        Pipe.load_images()
 
         self.inGame = True
 
-        self.player = Cow()       
+        self.player = Cow() 
         self.sprites = OrderedUpdates()
         self.sprites.add(self.player)
+        self.sprites.add(Pipe(1000))
 
         set_screen_caption("Floppy Cow")
         update_screen()
