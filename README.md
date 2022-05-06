@@ -1,11 +1,12 @@
 # NOTE - Fresh project - expect further changes in the future
 
-# Quantum Evolution Algorithm
+# Quantum Evolution Algorithm - Flappy Cow 
 
 ## Project description
 
 * [X] Prepare basic project structure
-* [ ] Create GUI for training
+* [X] Create GUI for training
+* [X] Create a Flappy Cow game for testing
 * [ ] Implement Quantum version of evolution algorithm
 
 ## Before Running
@@ -20,7 +21,6 @@
    `python3 -m pip install -r requirements.txt`
 
 ## Data Preprocessing and Augmentation, Data Split
-
 ## Solution Description
 
 ## Results
