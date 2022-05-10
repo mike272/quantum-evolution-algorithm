@@ -16,7 +16,8 @@ pipe_up:Surface
 pipe_down:Surface
 
 class Pipe(Sprite):
-    def __init__(self, pos):
+    touched = False
+    def __init__(self, pos:int, player:Sprite):
         Sprite.__init__(self)
         self.image = Surface((PIPE_IMAGE_SIZE[0],SCREEN_SIZE[1]), SRCALPHA, 32)
         self.rect = self.image.get_rect()
@@ -25,10 +26,18 @@ class Pipe(Sprite):
         self.image.blit(pipe_down, (0, -PIPE_IMAGE_SIZE[1]+self.hole-HOLE_SIZE//2))
         self.image.blit(pipe_up, (0, self.hole+HOLE_SIZE//2))
         self.rect.topleft = (pos,0)
+        self.player = player
+
         
     def update(self):
-        self.pos-=X_VELOCITY
-        self.rect.topleft = (self.pos, 0)
+        if not Pipe.touched:
+            self.pos-=X_VELOCITY
+            self.rect.topleft = (self.pos, 0)
+
+        if abs(self.player.rect.centerx - self.rect.centerx)<=200\
+            and abs(self.player.rect.centery-self.hole)>=HOLE_SIZE:
+                Pipe.touched = True
+                self.player.lock()
 
     @staticmethod
     def load_images():

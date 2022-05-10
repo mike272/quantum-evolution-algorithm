@@ -41,7 +41,8 @@ class Game:
         self.player = Cow() 
         self.sprites = OrderedUpdates()
         self.sprites.add(self.player)
-        self.sprites.add(Pipe(1000))
+        for i in range(100):
+            self.sprites.add(Pipe(1000+500*i, self.player))
 
         set_screen_caption("Floppy Cow")
         update_screen()
