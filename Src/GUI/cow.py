@@ -10,7 +10,7 @@ from pygame.sprite import \
 
 from math import atan
 
-from Src.const import ASSETS_PATH, GRAVITY, JUMP_POWER, SCREEN_SIZE, X_VELOCITY, COW_SCALE_DOWN, COW_AMPLIFY_ROTATION
+from Src.const import ASSETS_PATH, DEBUG, GRAVITY, COW_JUMP_POWER, SCREEN_SIZE, X_VELOCITY, COW_SCALE_DOWN, COW_AMPLIFY_ROTATION
 
 class Cow(Sprite):
     def __init__(self):
@@ -18,6 +18,9 @@ class Cow(Sprite):
 
         self.image = load_image(ASSETS_PATH+"cow.png").convert_alpha()
         self.image = scale_image(self.image, (self.image.get_width()//COW_SCALE_DOWN,self.image.get_height()//COW_SCALE_DOWN))
+        if DEBUG:
+            self.image.fill((255,0,0))
+        
         self.image_base = self.image.copy()
 
         self.rect = self.image.get_rect()
@@ -46,7 +49,8 @@ class Cow(Sprite):
 
     def jump(self):
         if not self.lockJump:
-            self.velocity = -JUMP_POWER
+            self.velocity = -COW_JUMP_POWER
     
     def lock(self):
+        self.velocity = 0
         self.lockJump = True

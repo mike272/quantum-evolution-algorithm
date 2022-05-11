@@ -8,7 +8,7 @@ from typing import Tuple
 STATS_FILE   = 'models_statistics.csv'      # File which stores statistics about every session
 TEST_FILE    = 'test_set_statistics.csv'    # File which stores statistics of a test session run on a selected model
 
-DEBUG = False               # Debug mode - loads/processes only a few images basically instant program execution
+DEBUG = True               # Debug mode - loads/processes only a few images basically instant program execution
 
 SCREEN_SIZE = [1280,720]
 PIPE_IMAGE_SIZE = [200,3000]
@@ -16,11 +16,14 @@ FPS = 60
 
 X_VELOCITY = 4
 GRAVITY = 0.5
-JUMP_POWER = 10
+
 HOLE_SIZE = 250
-HOLE_MIN_DIST = 50
+HOLE_MIN_DIST = 100
+
+COW_JUMP_POWER = 10
 COW_SCALE_DOWN = 2
 COW_AMPLIFY_ROTATION = 6
+COW_TOUCH_OFFSET = 50
 
 ASSETS_PATH = "./Assets/"
 

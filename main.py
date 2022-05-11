@@ -36,7 +36,7 @@ settings = Settings(
     print_summary = True                # Prints network summary upon creation
 )
 game = Game()
-game.play()
+game.play() 
 #app = QuantumGUI(settings)
 #app.run()
 

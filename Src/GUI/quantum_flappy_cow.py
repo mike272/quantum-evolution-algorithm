@@ -15,7 +15,7 @@ from pygame.transform import \
 from pygame.sprite import \
     OrderedUpdates
 
-from Src.const import ASSETS_PATH, SCREEN_SIZE, FPS
+from Src.const import ASSETS_PATH, SCREEN_SIZE, FPS, DEBUG
 from Src.GUI.cow import Cow
 from Src.GUI.pipe import Pipe
 
@@ -43,6 +43,11 @@ class Game:
         self.sprites.add(self.player)
         for i in range(100):
             self.sprites.add(Pipe(1000+500*i, self.player))
+
+        if DEBUG:
+            print(Pipe.holes)
+            print(min(Pipe.holes))
+            print(max(Pipe.holes))
 
         set_screen_caption("Floppy Cow")
         update_screen()
