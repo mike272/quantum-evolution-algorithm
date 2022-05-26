@@ -19,7 +19,7 @@ from Src.const import ASSETS_PATH, SCREEN_SIZE, FPS, DEBUG
 from Src.GUI.Visualization.cow import Cow
 from Src.GUI.Visualization.pipe import Pipe
 
-class Game:
+class Visualization:
 
     screen:Surface
     background:Surface

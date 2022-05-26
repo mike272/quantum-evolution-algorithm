@@ -20,7 +20,8 @@ class Settings:
         babies_count = 100,
         leaders_count = 10,
         bits_count = 32,
-        initial_bits = "00000000000000000000000000000000",               
+        initial_bits = "00000000000000000000000000000000",  
+        float_precision = 4,             
         verbose = 1
     ):
         self.epochs = epochs  
@@ -30,6 +31,7 @@ class Settings:
         self.leaders_count = leaders_count
         self.bits_count = bits_count
         self.initial_bits = initial_bits
+        self.float_precision = float_precision
 
         if(mutation_rate == 0):
             self.mutation_rate = round(1/bits_count,2)
