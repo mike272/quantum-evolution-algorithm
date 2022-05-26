@@ -1,14 +1,12 @@
 from os import environ
-from typing import Tuple
 
 ####
 #### This file contains constant values for the whole program
 ####
 
 STATS_FILE   = 'models_statistics.csv'      # File which stores statistics about every session
-TEST_FILE    = 'test_set_statistics.csv'    # File which stores statistics of a test session run on a selected model
 
-DEBUG = True               # Debug mode - loads/processes only a few images basically instant program execution
+DEBUG = False               # Debug mode - loads/processes only a few images basically instant program execution
 
 SCREEN_SIZE = [1280,720]
 PIPE_IMAGE_SIZE = [200,3000]

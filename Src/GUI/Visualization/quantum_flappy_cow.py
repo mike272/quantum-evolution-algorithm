@@ -16,8 +16,8 @@ from pygame.sprite import \
     OrderedUpdates
 
 from Src.const import ASSETS_PATH, SCREEN_SIZE, FPS, DEBUG
-from Src.GUI.cow import Cow
-from Src.GUI.pipe import Pipe
+from Src.GUI.Visualization.cow import Cow
+from Src.GUI.Visualization.pipe import Pipe
 
 class Game:
 
