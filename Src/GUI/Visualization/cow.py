@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pygame import \
     Surface, SRCALPHA
 from pygame.image import \
@@ -23,18 +24,16 @@ class Cow(Sprite):
     def __init__(self, network: List[Layer], bits: str, settings:Settings, processFunc:Callable[[List[float], List[Layer], Settings], bool]):
         Sprite.__init__(self)
 
-        if not settings.silent:
-            self.image = load_image(ASSETS_PATH+"cow.png").convert_alpha()
-            self.image = scale_image(self.image, COW_SIZE)
+        self.image = load_image(ASSETS_PATH+"cow.png").convert_alpha()
+        self.image = scale_image(self.image, COW_SIZE)
 
-            if DEBUG:
-                self.image.fill((255,0,0))
-        else:
-            self.image = Surface(COW_SIZE, SRCALPHA, 32).convert_alpha()
-        
+        if DEBUG:
+            self.image.fill((255,0,0))
+   
         self.image_base = self.image.copy()
 
-        self.bits = bits
+        self.bits = "".join([str(a) for a in bits])
+        assert(id(self.bits)!=id(bits))
         self.rect = self.image.get_rect()
         self.rect_center = self.rect.center
         self.rect.topleft = (COW_X,(SCREEN_SIZE[1]-self.image.get_height())//2)

@@ -87,6 +87,7 @@ def breed(players:List[Cow], settings: Settings) -> List[Cow]:
     for i in range(0, len(champs)):
         network = initializeNetwork(champs[i], settings)
         players[i] = Cow(network, champs[i], settings, processBits)
+        players[i].makeRed()
 
     c = 0
     for i in range(len(champs), settings.babies_count):

@@ -28,7 +28,8 @@ settings = Settings(
     leaders_count=10,
     neurons=neurons,
     float_precision=float_precision, #Note: float precision of 5 means 4 float bits + 1 sign bit
-    bits_count=float_precision*INPUT_SHAPE*2 if neurons==1 else float_precision*(neurons-1)*(INPUT_SHAPE+1)
+    bits_count=float_precision*INPUT_SHAPE*2 if neurons==1 else float_precision*(neurons-1)*(INPUT_SHAPE+1),
+    silent=True
 )
  
 #app = QuantumGUI(settings)

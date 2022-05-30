@@ -32,9 +32,9 @@ class Pipe(Sprite):
         if DEBUG:
             Pipe.holes.append(self.hole)
 
-        if not self.settings.silent:
-            self.image.blit(pipe_down, (0, -PIPE_IMAGE_SIZE[1]+self.hole-HOLE_SIZE//2))
-            self.image.blit(pipe_up, (0, self.hole+HOLE_SIZE//2))
+
+        self.image.blit(pipe_down, (0, -PIPE_IMAGE_SIZE[1]+self.hole-HOLE_SIZE//2))
+        self.image.blit(pipe_up, (0, self.hole+HOLE_SIZE//2))
 
         self.rect.topleft = (pos,0)
         self.players = players

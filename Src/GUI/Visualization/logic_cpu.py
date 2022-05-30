@@ -7,30 +7,11 @@ from Src.GUI.Visualization.layer import *
 from Src.const import COW_JUMP_POWER, PIPE_DIST, SCREEN_SIZE
 from Src.settings import Settings
 
-arr:List[str] = []
-
-def initArr(precision):
-    global arr
-    if len(arr) != 0: return
-    arr = ["".join(stuff) for stuff in itertools.product(["0","1"], repeat=precision)]
 
 def findClosestFloat(input: float, precision: int) -> float:
-    global arr
-    initArr(precision)
-
-    min_float = 1
-    min_dist = 1
-    for i in range(0, len(arr)):
-        s = arr[i]
-        sign = 1 if int(s[0]) == 0 else -1
-        val = int(s[1:], base=2) / (2**precision-1)
-        f = sign/val if val!=0 else 0
-        dist = abs(input-f)
-        if(dist<min_dist):
-            min_float = f
-            min_dist = dist
-
-    return min_float
+    r = 2**(precision-1)
+    f = round(input * r)/r
+    return f
 
 
 def preprocessInput(input: List[float], settings: Settings) -> np.ndarray:
