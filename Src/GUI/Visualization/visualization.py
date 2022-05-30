@@ -17,9 +17,7 @@ from pygame.sprite import \
     OrderedUpdates
 from Src.GUI.Visualization.logic import *
 
-from Src.const import ASSETS_PATH, PIPE_DIST, SCREEN_SIZE, FPS
-from Src.GUI.Visualization.cow import Cow
-from Src.GUI.Visualization.pipe import Pipe
+from Src.const import *
 from Src.settings import Settings
 
 class Visualization:
@@ -31,7 +29,7 @@ class Visualization:
     silent:bool
     inGame:bool
 
-    def __init__(self, players:List[str] , settings:Settings):   
+    def __init__(self, players_bits:List[str] , settings:Settings):   
 
         self.settings = settings
         self.silent = settings.silent
@@ -44,56 +42,44 @@ class Visualization:
             self.background = scale_image(self.background, SCREEN_SIZE)
 
             self.screen.blit(self.background, (0,0))
-            Pipe.load_images()
-
+        
+        Pipe.load_images()
         self.inGame = True
 
-        self.players:List[Cow] = [0]*len(players)
-        for i in range(0,len(players)):
-            self.players[i] = Cow.fromBits(players[i], self.settings)
+        self.players:List[Cow] = makeCows(players_bits, settings)
+        self.pipes:List[Pipe]  = makePipes(self.players, settings)
 
-        self.pipes:List[Pipe] = [0]*100
-        for i in range(100):
-            self.pipes[i] = Pipe(PIPE_DIST*(i+1), self.players, self.settings)
-
-        self.sprites_player = OrderedUpdates()
-        self.sprites_player.add(self.players)
-
-        self.sprites_pipes = OrderedUpdates()
-        self.sprites_pipes.add(self.pipes)
+        self.sprites_player = OrderedUpdates(self.players)
+        self.sprites_pipes = OrderedUpdates(self.pipes)
 
         set_screen_caption("Floppy Cow")
         update_screen()
 
     def play(self):
-        global fitness
         gameClock = Clock()
 
-        
+        fitness = 0
+        pipes_passed = 0
         while self.inGame:
             self.handle_events()
 
-            try:
-                test_player = self.sprites_player.sprites()[0]
-            except: 
-                self.players = self.sort(self.players)
-                self.players = self.breed(self.players, self.settings)
+            if(len(self.sprites_player.sprites())==0):
+                fitness = 0
+                pipes_passed = 0
+
+                self.players = list(sorted(self.players, key = lambda cow:cow.fitness, reverse = True))
+                self.players = breed(self.players, self.settings)
                 self.sprites_player.add(self.players)
-                self.sprites_pipes.remove(self.pipes)
 
-                for pipe in self.pipes: 
-                    pipe.reset(self.players)
-
+                self.sprites_pipes.empty()
+                for pipe in self.pipes: pipe.reset(self.players)
                 self.sprites_pipes.add(self.pipes)
 
-                test_player = self.sprites_player.sprites()[0]
-
-
             
-            try:
+            if(len(self.sprites_pipes.sprites())!=0):
+                
                 closest_pipe = self.sprites_pipes.sprites()[0]
-
-                Cow.updateStats(test_player.centerx(), closest_pipe.centertop())
+                Cow.updateStats(fitness, closest_pipe.data(), pipes_passed*PIPE_IMAGE_SIZE[0])
 
                 self.sprites_player.update()
                 self.sprites_player.draw(self.screen)
@@ -101,20 +87,23 @@ class Visualization:
                 self.sprites_pipes.update()
                 self.sprites_pipes.draw(self.screen)
 
-                for player in self.players:
+                for player in self.sprites_player.sprites():
                     if player.lockJump:
                         self.sprites_player.remove(player)
 
                 for pipe in self.pipes:
-                    if pipe.rect.centerx<test_player.rect.left:
+                    if pipe.rect.centerx<COW_X - COW_SIZE[0]//2:
                         self.sprites_pipes.remove(pipe)
+                        pipes_passed += 1
+
                 update_screen()
 
                 self.sprites_player.clear(self.screen, self.background)
                 self.sprites_pipes.clear(self.screen, self.background)
 
-                gameClock.tick(FPS+1)        
-            except:
+                gameClock.tick(FPS+1)    
+                fitness+=1    
+            else:
                 self.inGame = False
 
         pygame.quit()
@@ -131,35 +120,4 @@ class Visualization:
                     for player in self.players:
                         player.jump()
 
-    def sort(self, players:List[Cow]):
-        return sorted(players, key = lambda cow:cow.fitness, reverse = True)
-
-    def breed(self, players:List[Cow], settings: Settings):
-        champs = [p.bits for p in players[0:settings.leaders_count]]
-        players = [0]*settings.babies_count
-        c = 0
-        for i in range(0, len(champs)):
-            players[i] = Cow.fromBits(champs[i], settings)
-
-        for i in range(len(champs), settings.babies_count):
-            players[i] = Cow.fromBits(randomBits(champs[c%len(champs)], settings.mutation_rate), settings)
-            c+=1
-
-        return players 
-
-if __name__ == "__main__":
-    mode = 1
-    settings = Settings()
-    bits = [settings.initial_bits]
-
-    if(mode==1):
-        try:
-            game = Visualization(bits, settings)
-            game.play()
-        except Exception as e:
-            print("======= ERR =======")
-            print(e)
-            pygame.quit()
-    else:
-        game = Visualization(bits, settings)
-        game.play()
+    

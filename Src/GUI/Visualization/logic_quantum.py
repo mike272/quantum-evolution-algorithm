@@ -1,8 +1,5 @@
 from typing import List, Tuple
-
-class FloatQubit:
-    pass
-
+from Src.GUI.Visualization.layer import *
 
 def preprocessInputQ(input: List[float]) -> List[FloatQubit]:
     return []
@@ -12,6 +9,9 @@ def createNFloatsQ(input: str, n: int, precision: int, offset: int = 0) -> Tuple
 
 def multiplyQ(input: List[FloatQubit], weights: List[FloatQubit]) -> FloatQubit:
     return FloatQubit()
+
+def mutateBitsQ(s:str, m:float):
+    return s
 
 def mapQ(input: FloatQubit) -> bool:
     return True

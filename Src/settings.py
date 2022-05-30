@@ -1,7 +1,6 @@
 from typing import List
 
-from numpy import quantile
-from Src.const import DEBUG
+from Src.const import INPUT_SHAPE
 
 class Settings:
     '''
@@ -30,6 +29,8 @@ class Settings:
         initial_bits = "0",  
         float_precision = 5,             
         verbose = 1,
+        neurons = 3,
+        pipes = 100,
 
         players = [],
         silent = False,
@@ -44,13 +45,14 @@ class Settings:
         self.bits_count = bits_count
         self.initial_bits = initial_bits
         self.float_precision = float_precision
-
+        self.neurons = neurons
+        self.pipes = pipes
         self.players = players
         self.silent = silent
         self.quantum = quantum
         self.player_controlled = player_controlled
 
-        if(mutation_rate <= 0):
+        if(mutation_rate <= 0 or mutation_rate>=1):
             self.mutation_rate = round(1/bits_count,2)
         
         self.verbose = verbose
@@ -58,10 +60,6 @@ class Settings:
         if(len(self.initial_bits) != self.bits_count):
             self.initial_bits = (self.initial_bits*self.bits_count)[:self.bits_count]
 
+        assert(float_precision*(neurons-1)*(INPUT_SHAPE+1)<=self.bits_count)
 
-                                #3+3+2 architecture
-        assert(self.float_precision*8<=self.bits_count)
-
-        if DEBUG: 
-            self.epochs = 1
 

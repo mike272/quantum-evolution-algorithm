@@ -1,85 +1,91 @@
 from random import random, randint
+from secrets import randbits
 import numpy as np
 
 from typing import List
+from Src.const import INPUT_SHAPE
 from Src.settings import Settings
+from Src.GUI.Visualization.cow import Cow as Cow
+from Src.GUI.Visualization.pipe import Pipe as Pipe
 from Src.GUI.Visualization.logic_cpu import *
 from Src.GUI.Visualization.logic_quantum import *
+from Src.GUI.Visualization.layer import *
 
-
-class Layer:
-    def __init__(self, weights:np.ndarray|List[FloatQubit]):
-        self.size = len(weights)
-        self.weights = weights
-
-    def multiply(self, input:np.ndarray) -> float:
-        return multiply(input, self.weights)
-
-    def multiplyQ(self, input:List[FloatQubit]) -> FloatQubit:
-        return multiplyQ(input, self.weights)
-        
-def randomStartingBits(settings:Settings):
-    bits = []
-    for i in range(0,settings.babies_count):
-        x = randint(2**39, 2**40-1)
-        b = format(x,'b').zfill(settings.bits_count)
-        bits.append(b)
-    return bits
-
-def randomBits(s:str, m:float):
-    o = ""
-
-    for i in range(0, len(s)):
-        if(random()<m):
-            if(s[i] == "0"):
-                o+="1"
-            else:
-                o += "0"
-        else:
-            o+=s[i]
-
-    return o   
 
 def initializeNetwork(bits:str, settings:Settings) -> List[Layer]:
 
-    network:List[Layer]
+    network:List[Layer] = [0]*settings.neurons
 
-    if(settings.quantum):
-        l1, offset = createNFloatsQ(bits,3, settings.float_precision) 
-        l2, offset = createNFloatsQ(bits,3, settings.float_precision, offset) 
-        l3, offset = createNFloatsQ(bits,2, settings.float_precision, offset)
-        network = [Layer(l1),Layer(l2),Layer(l3)]
-    else:
-        l1, offset = createNFloats(bits,3, settings.float_precision) 
-        l2, offset = createNFloats(bits,3, settings.float_precision, offset) 
-        l3, offset = createNFloats(bits,2, settings.float_precision, offset) 
-        network = [Layer(l1),Layer(l2),Layer(l3)]
+    createFloatsFunc = createNFloatsQ if settings.quantum else createNFloats
+
+    offset = 0
+    for i in range(0, settings.neurons-1):
+        l, offset = createFloatsFunc(bits, INPUT_SHAPE, settings.float_precision, offset)     
+        network[i] = Layer(l)
+
+    finalLayer, offset = createFloatsFunc(bits, settings.neurons-1, settings.float_precision, offset)
+    network[settings.neurons-1] = Layer(finalLayer)
 
     return network
 
-def processBits(input:List[float], layers:List[Layer], quantum:bool = False) -> bool:
-    if quantum:
-        input = preprocessInputQ(input)
-        layer0_1_output = layers[0].multiplyQ(input)
-        layer0_2_output = layers[1].multiplyQ(input)
+def processBits(input:List[float], layers:List[Layer], settings:Settings) -> bool:
 
-        layer0_output = [layer0_1_output, layer0_2_output]
+    preprocFunc = preprocessInputQ if settings.quantum else preprocessInput
+    multiplyFunc = multiplyQ if settings.quantum else multiply
+    mapFunc = mapQ if settings.quantum else map
 
-        layer1_output = layers[2].multiplyQ(layer0_output)
+    input = preprocFunc(input)
+    firstLayerOutput = [0]*(settings.neurons-1)
 
-        return mapQ(layer1_output)
+    for i in range(0, settings.neurons-1):
+        firstLayerOutput[i] = multiplyFunc(input, layers[i].weights)
 
-    else:
-        input = preprocessInput(input)
-        layer0_1_output = layers[0].multiply(input)
-        layer0_2_output = layers[1].multiply(input)
+    firstLayerOutput = np.array(firstLayerOutput).reshape((settings.neurons-1)) if settings.quantum \
+        else firstLayerOutput
 
-        layer0_output = np.array([layer0_1_output, layer0_2_output])
+    output = multiplyFunc(firstLayerOutput, layers[settings.neurons-1].weights)
 
-        layer0_output = np.reshape(layer0_output, (2))
+    return mapFunc(output)
+    
+def randomStartingBits(settings:Settings):
+    bits = [0]*settings.babies_count
 
-        layer1_output = layers[2].multiply(layer0_output)
+    for i in range(0,settings.babies_count):
+        b = randbits(settings.bits_count)
+        bits[i] = format(b,'b').zfill(settings.bits_count)
 
-        return map(layer1_output)
-        
+    return bits
 
+def makeCows(players:List[str],settings: Settings):
+    cows = [0]*len(players)
+
+    for i in range(0,len(players)):
+        network = initializeNetwork(players[i], settings)
+        cows[i] = Cow(network, players[i], settings, processBits)
+
+    return cows
+
+def makePipes(players:List[Cow], settings:Settings) -> List[Pipe]:
+    pipes = [0]*settings.pipes
+
+    for i in range(settings.pipes):
+        pipes[i] = Pipe(PIPE_DIST*(i+1), players, settings)
+
+    return pipes
+
+def breed(players:List[Cow], settings: Settings) -> List[Cow]:
+    champs = [p.bits for p in players[0:settings.leaders_count]]
+    players = [0]*settings.babies_count
+
+    for i in range(0, len(champs)):
+        network = initializeNetwork(champs[i], settings)
+        players[i] = Cow(network, champs[i], settings, processBits)
+
+    c = 0
+    for i in range(len(champs), settings.babies_count):
+        bits = mutateBits(champs[c%len(champs)], settings.mutation_rate)
+        network = initializeNetwork(bits, settings)
+        players[i] = Cow(network, bits, settings, processBits)
+        c+=1
+
+    return players 

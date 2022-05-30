@@ -53,8 +53,8 @@ class Pipe(Sprite):
                             player.lock()
                             player.makeRed()
 
-    def centertop(self):
-        return [self.rect.centerx, self.hole - HOLE_SIZE//2]
+    def data(self):
+        return [self.rect.centerx, self.hole + HOLE_SIZE//2, self.hole - HOLE_SIZE//2]
 
     def reset(self, players):
         self.players = players

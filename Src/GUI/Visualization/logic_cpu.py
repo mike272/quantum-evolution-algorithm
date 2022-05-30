@@ -1,15 +1,15 @@
 import numpy as np
-
+from random import random
 from typing import List, Tuple
+from Src.GUI.Visualization.layer import *
 
 from Src.const import COW_JUMP_POWER, PIPE_DIST, SCREEN_SIZE
 
 def preprocessInput(input: List[float]) -> np.ndarray:
-    arr = np.zeros((3), dtype=np.float16)
+    arr = np.zeros((2), dtype=np.float16)
 
-    arr[0] = input[0]/PIPE_DIST
-    arr[1] = input[1]/SCREEN_SIZE[1]
-    arr[2] = input[2]/COW_JUMP_POWER
+    arr[0] = input[0]/SCREEN_SIZE[1]
+    arr[1] = input[1]/COW_JUMP_POWER
 
     return arr
 
@@ -30,3 +30,17 @@ def multiply(input:np.ndarray, weights: np.ndarray) -> float:
 
 def map(input: float) -> bool:
     return input>=0.5 
+
+def mutateBits(s:str, m:float):
+    o = ""
+
+    for i in range(0, len(s)):
+        if(random()<m):
+            if(s[i] == "0"):
+                o+="1"
+            else:
+                o += "0"
+        else:
+            o+=s[i]
+
+    return o  

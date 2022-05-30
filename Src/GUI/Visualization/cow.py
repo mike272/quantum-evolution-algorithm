@@ -9,18 +9,18 @@ from pygame.sprite import \
     Sprite \
 
 from math import atan
-from typing import List
-from Src.GUI.Visualization.logic import *
+from typing import Callable, List
 
-from Src.const import ASSETS_PATH, COW_SIZE, DEBUG, GRAVITY, COW_JUMP_POWER, SCREEN_SIZE, X_VELOCITY, COW_AMPLIFY_ROTATION
+from Src.const import *
 from Src.settings import Settings
+from Src.GUI.Visualization.layer import Layer
 
 
 fitness = 0
-closest_pipe = [0,0]
+closest_pipe = [0,0,0]
 
 class Cow(Sprite):
-    def __init__(self, network: List[Layer], bits: str, settings:Settings):
+    def __init__(self, network: List[Layer], bits: str, settings:Settings, processFunc:Callable[[List[float], List[Layer], Settings], bool]):
         Sprite.__init__(self)
 
         if not settings.silent:
@@ -37,13 +37,14 @@ class Cow(Sprite):
         self.bits = bits
         self.rect = self.image.get_rect()
         self.rect_center = self.rect.center
-        self.rect.topleft = (100,(SCREEN_SIZE[1]-self.image.get_height())//2)
+        self.rect.topleft = (COW_X,(SCREEN_SIZE[1]-self.image.get_height())//2)
 
         self.velocity  = 0
         self.lockJump = False
 
         self.network = network
         self.settings = settings
+        self.processFunc = processFunc
 
         self.fitness = 0
         
@@ -51,10 +52,9 @@ class Cow(Sprite):
         global fitness, closest_pipe
 
         if not self.settings.player_controlled:
-            if processBits([fitness - closest_pipe[0],
-                            self.rect.centery - closest_pipe[1],
+            if self.processFunc([self.rect.centery - closest_pipe[1],
                             -self.velocity],
-                            self.network, self.settings.quantum):
+                            self.network, self.settings):
                 self.jump()
 
         if self.rect.centery<0 or self.rect.centery>=SCREEN_SIZE[1]:
@@ -64,9 +64,6 @@ class Cow(Sprite):
         self.rot_center()
 
         self.rect.center = (self.rect.centerx, self.rect.centery+self.velocity)
-
-
-        #if(self.rect.bottom>SCREEN_SIZE[1]): self.jump()
 
     def rot_center(self):
         angle = -COW_AMPLIFY_ROTATION*atan(self.velocity/X_VELOCITY)
@@ -83,7 +80,7 @@ class Cow(Sprite):
         global fitness
         self.velocity = 0
         self.lockJump = True
-        self.fitness = self.rect.centerx
+        self.fitness = fitness
 
     def centerx(self):
         return self.rect.centerx
@@ -92,14 +89,14 @@ class Cow(Sprite):
         self.image.fill((255,0,0))
         self.image_base.fill((255,0,0))
 
-    @staticmethod
-    def fromBits(bits:str, settings:Settings):
+    def __str__(self) -> str:
+        return f"{self.fitness} {self.lockJump} {self.bits}"
 
-        network = initializeNetwork(bits, settings)
-        return Cow(network, bits, settings)
 
     @staticmethod
-    def updateStats(f:int, cp:List[int]):
+    def updateStats(f:int, cp:List[int], off:int):
         global fitness, closest_pipe
         fitness = f
-        closest_pipe = cp
+        closest_pipe[0] = cp[0] - off
+        closest_pipe[1] = cp[1] 
+        closest_pipe[2] = cp[2] 
