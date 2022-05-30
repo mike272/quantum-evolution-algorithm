@@ -60,6 +60,8 @@ class Settings:
         if(len(self.initial_bits) != self.bits_count):
             self.initial_bits = (self.initial_bits*self.bits_count)[:self.bits_count]
 
-        assert(float_precision*(neurons-1)*(INPUT_SHAPE+1)<=self.bits_count)
-
+        if self.neurons!=1:
+            assert(float_precision*(neurons-1)*(INPUT_SHAPE+1)<=self.bits_count)
+        else:
+            assert(float_precision*INPUT_SHAPE*2<=self.bits_count)
 

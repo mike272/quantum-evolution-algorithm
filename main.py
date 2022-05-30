@@ -10,15 +10,25 @@ float_precision = 5
 
 '''
 The eq for bits FOR WEIGHTS is as follows:
-float_precision*(INPUT_SHAPE*(neurons-1) + neurons - 1) = float_precision*(neurons-1)*(INPUT_SHAPE+1)
+FOR NEURONS != 1:
+    float_precision*(INPUT_SHAPE*(neurons-1) + neurons - 1) = float_precision*(neurons-1)*(INPUT_SHAPE+1)
+FOR NEURONS == 1:
+    float_precision*INPUT_SHAPE
+
+TOTAL, WITH INPUTS:
+N!=1:    
+    float_precision*((neurons-1)*(INPUT_SHAPE+1)+INPUT_SHAPE)
+N==1:
+    float_precision*INPUT_SHAPE*2
+
 '''
 settings = Settings(
     babies_count=100,
-    mutation_rate=0,
+    mutation_rate=0, #Note: 0 is auto (1/bits)
     leaders_count=10,
     neurons=neurons,
     float_precision=float_precision, #Note: float precision of 5 means 4 float bits + 1 sign bit
-    bits_count=float_precision*2#float_precision*(neurons-1)*(INPUT_SHAPE+1)
+    bits_count=float_precision*INPUT_SHAPE*2 if neurons==1 else float_precision*(neurons-1)*(INPUT_SHAPE+1)
 )
  
 #app = QuantumGUI(settings)

@@ -38,7 +38,7 @@ def processBits(input:List[float], layers:List[Layer], settings:Settings) -> boo
     multiplyFunc = multiplyQ if settings.quantum else multiply
     mapFunc = mapQ if settings.quantum else map
 
-    input = preprocFunc(input)
+    input = preprocFunc(input, settings)
     if settings.neurons!=1:
         firstLayerOutput = [0]*(settings.neurons-1)
 
