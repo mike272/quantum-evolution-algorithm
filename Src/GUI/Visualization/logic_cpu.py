@@ -20,6 +20,7 @@ def preprocessInput(input: List[float], settings: Settings) -> np.ndarray:
     arr[0] = findClosestFloat(input[0]/SCREEN_SIZE[1], settings.float_precision)
     arr[1] = findClosestFloat(input[1]/COW_JUMP_POWER, settings.float_precision)
 
+    #print(arr)
     return arr
 
 def createNFloats(input: str, n: int, precision: int, offset: int = 0) -> Tuple[np.ndarray,int]:

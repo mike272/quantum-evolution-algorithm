@@ -68,7 +68,7 @@ class QuantumGUI(object):
         self.buildFitnessLayout()
 
         self.mainDialog.show()
-        sys.exit(self.app.exec_())
+        self.app.exec_()
 
     def buildVisualizationLayout(self):
         self.visualizationLayout = QVBoxLayout()

@@ -63,6 +63,15 @@ def randomStartingBits(settings:Settings):
 
     return bits
 
+def randomMutatedBits(settings:Settings):
+    bits = [0]*settings.babies_count
+
+    bits[0] = settings.initial_bits
+    for i in range(1, settings.babies_count):
+        b = mutateBits(settings.initial_bits, settings.mutation_rate)
+        bits[i] = b
+    return bits
+
 def makeCows(players:List[str],settings: Settings):
     cows = [0]*len(players)
 

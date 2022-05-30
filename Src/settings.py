@@ -22,10 +22,10 @@ class Settings:
     def __init__(self,
                                             
         epochs = 30, 
-        mutation_rate = 0, # auto   
+        mutation_rate = 0,  #auto   
         babies_count = 40,
         leaders_count = 5,
-        bits_count = 40,
+        bits_count = 0,     #auto
         initial_bits = "0",  
         float_precision = 5,             
         verbose = 1,
@@ -35,7 +35,8 @@ class Settings:
         players = [],
         silent = False,
         quantum = False,
-        player_controlled = False
+        player_controlled = False,
+        i_know_what_im_doing = False
     ):
         self.epochs = epochs  
         
@@ -51,17 +52,29 @@ class Settings:
         self.silent = silent
         self.quantum = quantum
         self.player_controlled = player_controlled
-
-        if(mutation_rate <= 0 or mutation_rate>=1):
-            self.mutation_rate = round(1/bits_count,2)
-        
         self.verbose = verbose
+
+        if self.bits_count == 0:
+            self.bits_count = self.float_precision*INPUT_SHAPE*2 if self.neurons==1 \
+                else self.float_precision*(self.neurons-1)*(INPUT_SHAPE+1)
+            print(f"AUTO bits_count: {self.bits_count}")
+
+        print(f"BITS usage: {self.bits_count} total - {INPUT_SHAPE*self.float_precision} input - {self.bits_count - INPUT_SHAPE*self.float_precision} weights")
+
+
+        if(self.mutation_rate <= 0 or self.mutation_rate>=1):
+            self.mutation_rate = round(1/self.bits_count,2)
+            print(f"AUTO mutation_rate: {self.mutation_rate}")
+
 
         if(len(self.initial_bits) != self.bits_count):
             self.initial_bits = (self.initial_bits*self.bits_count)[:self.bits_count]
+            print(f"REPEAT initial_bits: {self.initial_bits}")
 
-        if self.neurons!=1:
-            assert(float_precision*(neurons-1)*(INPUT_SHAPE+1)<=self.bits_count)
-        else:
-            assert(float_precision*INPUT_SHAPE*2<=self.bits_count)
+        if not i_know_what_im_doing:
+            if self.neurons!=1:
+                assert(self.float_precision*(self.neurons-1)*(INPUT_SHAPE+1)<=self.bits_count)
+            else:
+                assert(self.float_precision*INPUT_SHAPE*2<=self.bits_count)
+
 

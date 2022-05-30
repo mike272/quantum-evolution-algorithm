@@ -33,7 +33,6 @@ class Cow(Sprite):
         self.image_base = self.image.copy()
 
         self.bits = "".join([str(a) for a in bits])
-        assert(id(self.bits)!=id(bits))
         self.rect = self.image.get_rect()
         self.rect_center = self.rect.center
         self.rect.topleft = (COW_X,(SCREEN_SIZE[1]-self.image.get_height())//2)

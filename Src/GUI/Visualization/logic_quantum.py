@@ -1,8 +1,14 @@
 from typing import List, Tuple
 from Src.GUI.Visualization.layer import *
 from Src.settings import Settings
+from qiskit import QuantumCircuit
 
 def preprocessInputQ(input: List[float], settings:Settings) -> List[FloatQubit]:
+
+    qc = QuantumCircuit()
+
+
+
     return []
 
 def createNFloatsQ(input: str, n: int, precision: int, offset: int = 0) -> Tuple[List[FloatQubit],int]:

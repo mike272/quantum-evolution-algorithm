@@ -61,6 +61,12 @@ class Pipe(Sprite):
         self.pos = self.pos_base
         self.rect.topleft = (self.pos, 0)
 
+        self.hole = randint(HOLE_MIN_DIST+HOLE_SIZE//2,SCREEN_SIZE[1]-HOLE_SIZE//2-HOLE_MIN_DIST)
+
+        self.image = Surface((PIPE_IMAGE_SIZE[0],SCREEN_SIZE[1]), SRCALPHA, 32).convert_alpha()
+        self.image.blit(pipe_down, (0, -PIPE_IMAGE_SIZE[1]+self.hole-HOLE_SIZE//2))
+        self.image.blit(pipe_up, (0, self.hole+HOLE_SIZE//2))
+
     @staticmethod
     def load_images():
         global pipe_down, pipe_up
