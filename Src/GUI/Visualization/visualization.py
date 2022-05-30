@@ -47,9 +47,9 @@ class Visualization:
         self.inGame = True
 
         self.players:List[Cow] = makeCows(players_bits, settings)
-        self.pipes:List[Pipe]  = makePipes(self.players, settings)
-
         self.sprites_player = OrderedUpdates(self.players)
+
+        self.pipes:List[Pipe]  = makePipes(self.sprites_player, settings)
         self.sprites_pipes = OrderedUpdates(self.pipes)
 
         set_screen_caption("Floppy Cow")
@@ -78,7 +78,7 @@ class Visualization:
                 self.sprites_player.add(self.players)
 
                 self.sprites_pipes.empty()
-                for pipe in self.pipes: pipe.reset(self.players)
+                for pipe in self.pipes: pipe.reset()
                 self.sprites_pipes.add(self.pipes)
 
                 

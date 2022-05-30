@@ -57,8 +57,7 @@ class Pipe(Sprite):
     def data(self):
         return [self.rect.centerx, self.hole + HOLE_SIZE//2, self.hole - HOLE_SIZE//2]
 
-    def reset(self, players):
-        self.players = players
+    def reset(self):
         self.pos = self.pos_base
         self.rect.topleft = (self.pos, 0)
 
