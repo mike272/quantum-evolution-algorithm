@@ -9,7 +9,7 @@ STATS_FILE   = 'models_statistics.csv'      # File which stores statistics about
 DEBUG = False               # Debug mode - loads/processes only a few images basically instant program execution
 
 SCREEN_SIZE = [1280,720]
-PIPE_IMAGE_SIZE = [200,3000]
+PIPE_IMAGE_SIZE = [200,1000]
 FPS = 60
 
 INPUT_SHAPE = 2

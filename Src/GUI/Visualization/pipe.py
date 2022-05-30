@@ -43,15 +43,16 @@ class Pipe(Sprite):
     def update(self):
         if not Pipe.touched:
             self.pos-=X_VELOCITY
-            self.rect.topleft = (self.pos, 0)
+            if(self.pos<SCREEN_SIZE[0]):
+                self.rect.topleft = (self.pos, 0)
 
-            for player in self.players:
-                if abs(player.rect.centerx - self.rect.centerx)<=player.rect.width\
-                    and (player.rect.top + COW_TOUCH_OFFSET-(self.hole-HOLE_SIZE//2)<=0 
-                        or (self.hole+HOLE_SIZE//2) - player.rect.bottom + COW_TOUCH_OFFSET<=0):
-                            #Pipe.touched = True
-                            player.lock()
-                            player.makeRed()
+                for player in self.players:
+                    if abs(player.rect.centerx - self.rect.centerx)<=player.rect.width\
+                        and (player.rect.top + COW_TOUCH_OFFSET-(self.hole-HOLE_SIZE//2)<=0 
+                            or (self.hole+HOLE_SIZE//2) - player.rect.bottom + COW_TOUCH_OFFSET<=0):
+                                #Pipe.touched = True
+                                player.lock()
+                                player.makeRed()
 
     def data(self):
         return [self.rect.centerx, self.hole + HOLE_SIZE//2, self.hole - HOLE_SIZE//2]
