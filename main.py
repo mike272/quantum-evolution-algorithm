@@ -5,7 +5,7 @@ from Src.GUI.quantum_gui import QuantumGUI
 from Src.settings import *
 import pygame
 
-neurons = 2 #neurons - 1 on the first layer, 1 neuron output layer
+neurons = 1 #neurons - 1 on the first layer, 1 neuron output layer
 float_precision = 5
 
 '''
@@ -18,7 +18,7 @@ settings = Settings(
     leaders_count=10,
     neurons=neurons,
     float_precision=float_precision, #Note: float precision of 5 means 4 float bits + 1 sign bit
-    bits_count=float_precision*(neurons-1)*(INPUT_SHAPE+1)
+    bits_count=float_precision*2#float_precision*(neurons-1)*(INPUT_SHAPE+1)
 )
  
 #app = QuantumGUI(settings)

@@ -19,12 +19,16 @@ def initializeNetwork(bits:str, settings:Settings) -> List[Layer]:
     createFloatsFunc = createNFloatsQ if settings.quantum else createNFloats
 
     offset = 0
-    for i in range(0, settings.neurons-1):
-        l, offset = createFloatsFunc(bits, INPUT_SHAPE, settings.float_precision, offset)     
-        network[i] = Layer(l)
+    if settings.neurons!=1:
+        for i in range(0, settings.neurons-1):
+            l, offset = createFloatsFunc(bits, INPUT_SHAPE, settings.float_precision, offset)     
+            network[i] = Layer(l)
 
-    finalLayer, offset = createFloatsFunc(bits, settings.neurons-1, settings.float_precision, offset)
-    network[settings.neurons-1] = Layer(finalLayer)
+        finalLayer, offset = createFloatsFunc(bits, settings.neurons-1, settings.float_precision, offset)
+        network[settings.neurons-1] = Layer(finalLayer)
+    else:
+        l,offset = createFloatsFunc(bits, INPUT_SHAPE, settings.float_precision, offset)
+        network[0] = Layer(l)
 
     return network
 
@@ -35,15 +39,18 @@ def processBits(input:List[float], layers:List[Layer], settings:Settings) -> boo
     mapFunc = mapQ if settings.quantum else map
 
     input = preprocFunc(input)
-    firstLayerOutput = [0]*(settings.neurons-1)
+    if settings.neurons!=1:
+        firstLayerOutput = [0]*(settings.neurons-1)
 
-    for i in range(0, settings.neurons-1):
-        firstLayerOutput[i] = multiplyFunc(input, layers[i].weights)
+        for i in range(0, settings.neurons-1):
+            firstLayerOutput[i] = multiplyFunc(input, layers[i].weights)
 
-    firstLayerOutput = np.array(firstLayerOutput).reshape((settings.neurons-1)) if settings.quantum \
-        else firstLayerOutput
+        firstLayerOutput = np.array(firstLayerOutput).reshape((settings.neurons-1)) if settings.quantum \
+            else firstLayerOutput
 
-    output = multiplyFunc(firstLayerOutput, layers[settings.neurons-1].weights)
+        output = multiplyFunc(firstLayerOutput, layers[settings.neurons-1].weights)
+    else:
+        output = multiplyFunc(input, layers[0].weights)
 
     return mapFunc(output)
     
