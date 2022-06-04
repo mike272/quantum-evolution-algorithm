@@ -11,7 +11,6 @@ from Src.GUI.Visualization.logic_cpu import *
 from Src.GUI.Visualization.logic_quantum import *
 from Src.GUI.Visualization.layer import *
 
-
 def initializeNetwork(bits:str, settings:Settings) -> List[Layer]:
 
     network:List[Layer] = [0]*settings.neurons
@@ -100,7 +99,12 @@ def breed(players:List[Cow], settings: Settings) -> List[Cow]:
 
     c = 0
     for i in range(len(champs), settings.babies_count):
-        bits = mutateBits(champs[c%len(champs)], settings.mutation_rate)
+        bits:str = ""
+        if not settings.quantum:
+            bits = mutateBits(champs[c%len(champs)], settings.mutation_rate)
+        else:
+            bits = rotation(champs[c%len(champs)], settings)
+
         network = initializeNetwork(bits, settings)
         players[i] = Cow(network, bits, settings, processBits)
         c+=1

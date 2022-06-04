@@ -43,6 +43,7 @@ settings = Settings(
     pipes=50,
     player_controlled=False,
     initial_bits="0",
+    quantum=True,
 )
  
 #app = QuantumGUI(settings)
