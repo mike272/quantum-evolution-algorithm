@@ -98,15 +98,29 @@ def breed(players:List[Cow], settings: Settings) -> List[Cow]:
         players[i].makeRed()
 
     c = 0
-    for i in range(len(champs), settings.babies_count):
-        bits:str = ""
-        if not settings.quantum:
-            bits = mutateBits(champs[c%len(champs)], settings.mutation_rate)
-        else:
-            bits = rotation(champs[c%len(champs)], settings)
+    if not settings.quantum:
+        for i in range(len(champs), settings.babies_count):
+            bits: str = ""
+            bits = mutateBits(champs[c % len(champs)], settings.mutation_rate)
+            network = initializeNetwork(bits, settings)
+            players[i] = Cow(network, bits, settings, processBits)
+            c += 1
+    else:
+        for i in range(0, len(champs)):
+            bits: str = ""
+            bits_list = []
+            bits_dict = rotation(champs[c % len(champs)], settings)
+            for key in bits_dict.keys():
+                for counter in range(bits_dict[key]):
+                    bits_list.append(key)
 
-        network = initializeNetwork(bits, settings)
-        players[i] = Cow(network, bits, settings, processBits)
-        c+=1
+
+            for j in range(0, int((settings.babies_count-settings.leaders_count)/settings.leaders_count)):
+                print(str(len(champs) + i * int((settings.babies_count-settings.leaders_count)/settings.leaders_count) + j))
+                #     create 19 cows
+                network = initializeNetwork(bits_list[j], settings)
+                players[len(champs) + i * int((settings.babies_count-settings.leaders_count)/settings.leaders_count) + j] = Cow(network, bits_list[j], settings, processBits)
+            c += 1
+
 
     return players 

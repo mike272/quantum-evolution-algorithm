@@ -34,7 +34,7 @@ N==1:
 settings = Settings(
     babies_count=100,
     mutation_rate=0,                    #Note: 0 is auto (1/bits)
-    leaders_count=8,
+    leaders_count=5,
     neurons=neurons,
     float_precision=float_precision,    #Note: float precision of 5 means 4 float bits + 1 sign bit
     bits_count=10,                       #Note: 0 is auto (from eq above)

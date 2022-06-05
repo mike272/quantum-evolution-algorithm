@@ -24,7 +24,7 @@ class Settings:
         epochs = 30, 
         mutation_rate = 0,  #auto   
         babies_count = 40,
-        leaders_count = 10,
+        leaders_count = 5,
         bits_count = 0,     #auto
         initial_bits = "0",  
         float_precision = 5,             

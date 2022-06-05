@@ -97,9 +97,9 @@ def rotation(s:str, settings:Settings):
     # qc.initialize(reversed_str, qreg)
     for i in range(0, len(s)):
         circ.h(i)
-        circ.rx(random.randint(1, 10), i)
-        circ.ry(random.randint(1, 10), i)
-        circ.rz(random.randint(1, 10), i)
+        circ.rx(50, i)
+        circ.ry(50, i)
+        circ.rz(50, i)
 
         meas = QuantumCircuit(10, 10)
         meas.barrier(range(10))
@@ -111,10 +111,11 @@ def rotation(s:str, settings:Settings):
         # as compose must put a smaller circuit into a larger one.
         qc = meas.compose(circ, range(10), front=True)
         qc_compiled = transpile(qc, backend)
-        job_sim = backend.run(qc_compiled, shots=100)
-        result_sim = job_sim.result()
-        counts = result_sim.get_counts(qc_compiled)
-        print(counts)
+    job_sim = backend.run(qc_compiled, shots=19)
+    result_sim = job_sim.result()
+    counts = result_sim.get_counts(qc_compiled)
+    print(counts)
+    return counts
 
     # Grab the results from the job.
     # result_sim = job_sim.result()
