@@ -97,9 +97,9 @@ def rotation(s:str, settings:Settings):
     # qc.initialize(reversed_str, qreg)
     for i in range(0, len(s)):
         circ.h(i)
-        circ.rx(50, i)
-        circ.ry(50, i)
-        circ.rz(50, i)
+        circ.rx(random.randint(0, 35), i)
+        circ.ry(random.randint(0, 35), i)
+        circ.rz(random.randint(0, 35), i)
 
         meas = QuantumCircuit(10, 10)
         meas.barrier(range(10))
